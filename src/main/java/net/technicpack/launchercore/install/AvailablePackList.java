@@ -29,7 +29,7 @@ public class AvailablePackList implements IAuthListener, PackRefreshListener {
 	public AvailablePackList(IPackStore packStore, MirrorStore mirrorStore) {
 		this.mPackStore = packStore;
         this.mirrorStore = mirrorStore;
-		this.mPackStore.put(new AddPack());
+		//this.mPackStore.put(new AddPack());
 	}
 
 	public void addForcedSolderPack(String solderLocation) {
