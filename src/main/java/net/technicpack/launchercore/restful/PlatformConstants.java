@@ -19,6 +19,7 @@
 
 package net.technicpack.launchercore.restful;
 
+//TODO: Set up the API urls.
 public class PlatformConstants {
 	public static final String PLATFORM = "http://www.technicpack.net/";
 
@@ -26,7 +27,7 @@ public class PlatformConstants {
 
 	public static final String MODPACK = API + "modpack/";
 
-	public static final String NEWS = API + "news/";
+	public static final String NEWS = "http://gamerarg.com.ar/MCLauncher/news.php";
 
 	public static String getPlatformInfoUrl(String modpack) {
 		return MODPACK + modpack;
