@@ -19,9 +19,11 @@ import java.nio.charset.Charset;
 public class HandleVersionFileTask implements IInstallTask {
 	private InstalledPack pack;
     private String libraryName;
+    private boolean updating;
 
-	public HandleVersionFileTask(InstalledPack pack) {
+	public HandleVersionFileTask(InstalledPack pack, boolean updating) {
 		this.pack = pack;
+		this.updating = updating;
 	}
 
 	@Override
@@ -46,47 +48,49 @@ public class HandleVersionFileTask implements IInstallTask {
 		if (version == null) {
 			throw new DownloadException("The version.json file was invalid.");
 		}
-
-		for (Library library : version.getLibrariesForOS()) {
-			// If minecraftforge is described in the libraries, skip it
-			// HACK - Please let us get rid of this when we move to actually hosting forge,
-			// or at least only do it if the users are sticking with modpack.jar
-			if (library.getName().startsWith("net.minecraftforge:minecraftforge") ||
-					library.getName().startsWith("net.minecraftforge:forge")) {
-				continue;
-			}
-
-            String[] nameBits = library.getName().split(":",3);
-            libraryName = nameBits[1]+"-"+nameBits[2]+".jar";
-            queue.RefreshProgress();
-
-			String natives = null;
-			File extractDirectory = null;
-			if (library.getNatives() != null) {
-				natives = library.getNatives().get(OperatingSystem.getOperatingSystem());
-
-				if (natives != null) {
-					extractDirectory = new File(this.pack.getBinDir(), "natives");
+		
+		if (updating) {
+			for (Library library : version.getLibrariesForOS()) {
+				// If minecraftforge is described in the libraries, skip it
+				// HACK - Please let us get rid of this when we move to actually hosting forge,
+				// or at least only do it if the users are sticking with modpack.jar
+				if (library.getName().startsWith("net.minecraftforge:minecraftforge") ||
+						library.getName().startsWith("net.minecraftforge:forge")) {
+					continue;
 				}
+	
+	            String[] nameBits = library.getName().split(":",3);
+	            libraryName = nameBits[1]+"-"+nameBits[2]+".jar";
+	            queue.RefreshProgress();
+	
+				String natives = null;
+				File extractDirectory = null;
+				if (library.getNatives() != null) {
+					natives = library.getNatives().get(OperatingSystem.getOperatingSystem());
+	
+					if (natives != null) {
+						extractDirectory = new File(this.pack.getBinDir(), "natives");
+					}
+				}
+	
+				String path = library.getArtifactPath(natives).replace("${arch}", System.getProperty("sun.arch.data.model"));
+				String url = library.getDownloadUrl(path, queue.getMirrorStore()).replace("${arch}", System.getProperty("sun.arch.data.model"));
+				String md5 = queue.getMirrorStore().getETag(url);
+	
+				File cache = new File(Utils.getCacheDirectory(), path);
+				if (cache.getParentFile() != null) {
+					cache.getParentFile().mkdirs();
+				}
+				
+	            IFileVerifier verifier = null;
+	            if (md5 != null && !md5.isEmpty()) {
+	                verifier = new MD5FileVerifier(md5);
+	            } else {
+	                verifier = new ValidZipFileVerifier();
+	            }
+	
+				queue.AddTask(new EnsureFileTask(cache, verifier, extractDirectory, url, library.getExtract()));
 			}
-
-			String path = library.getArtifactPath(natives).replace("${arch}", System.getProperty("sun.arch.data.model"));
-			String url = library.getDownloadUrl(path, queue.getMirrorStore()).replace("${arch}", System.getProperty("sun.arch.data.model"));
-			String md5 = queue.getMirrorStore().getETag(url);
-
-			File cache = new File(Utils.getCacheDirectory(), path);
-			if (cache.getParentFile() != null) {
-				cache.getParentFile().mkdirs();
-			}
-
-            IFileVerifier verifier = null;
-            if (md5 != null && !md5.isEmpty()) {
-                verifier = new MD5FileVerifier(md5);
-            } else {
-                verifier = new ValidZipFileVerifier();
-            }
-
-			queue.AddTask(new EnsureFileTask(cache, verifier, extractDirectory, url, library.getExtract()));
 		}
 
 		queue.AddTask(new GetAssetsIndexTask(this.pack));

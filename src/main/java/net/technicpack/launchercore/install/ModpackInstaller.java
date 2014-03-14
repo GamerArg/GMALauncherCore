@@ -78,13 +78,7 @@ public class ModpackInstaller {
 
 		boolean shouldUpdate = installedVersion == null;
 		if (!shouldUpdate && !this.build.equals(installedVersion.getVersion())) {
-			int result = JOptionPane.showConfirmDialog(component, "Would you like to update this pack?", "Update Found", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-
-			if (result == JOptionPane.YES_OPTION) {
-				shouldUpdate = true;
-			} else {
-				build = installedVersion.getVersion();
-			}
+			shouldUpdate = true;
 		}
 
 		if (shouldUpdate) {
@@ -99,20 +93,20 @@ public class ModpackInstaller {
 			queue.AddTask(new InstallModpackTask(this.installedPack, modpack));
 		}
 
-		queue.AddTask(new VerifyVersionFilePresentTask	(installedPack, minecraft));
-	queue.AddTask(new HandleVersionFileTask(installedPack));
-
-	if ((installedVersion != null && installedVersion.isLegacy()) || shouldUpdate)
-			queue.AddTask(new InstallMinecraftIfNecessaryTask(this.installedPack, minecraft));
-
-	queue.RunAllTasks();
-
-	Version versionFile = new Version(build, false);
-	versionFile.save(installedPack.getBinDir());
-
-	finished = true;
-	return queue.getCompleteVersion();
-}
+		queue.AddTask(new VerifyVersionFilePresentTask(installedPack, minecraft));
+		queue.AddTask(new HandleVersionFileTask(installedPack, shouldUpdate));
+	
+		if ((installedVersion != null && installedVersion.isLegacy()) || shouldUpdate)
+				queue.AddTask(new InstallMinecraftIfNecessaryTask(this.installedPack, minecraft));
+	
+		queue.RunAllTasks();
+	
+		Version versionFile = new Version(build, false);
+		versionFile.save(installedPack.getBinDir());
+	
+		finished = true;
+		return queue.getCompleteVersion();
+	}
 
 	private Version getInstalledVersion() {
 		Version version = null;
