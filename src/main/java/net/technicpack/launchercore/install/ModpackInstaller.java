@@ -94,7 +94,7 @@ public class ModpackInstaller {
 		}
 
 		queue.AddTask(new VerifyVersionFilePresentTask(installedPack, minecraft));
-		queue.AddTask(new HandleVersionFileTask(installedPack, shouldUpdate));
+		queue.AddTask(new HandleVersionFileTask(installedPack, shouldUpdate)); //Set shouldUpdate as true to get original behaviour
 	
 		if ((installedVersion != null && installedVersion.isLegacy()) || shouldUpdate)
 				queue.AddTask(new InstallMinecraftIfNecessaryTask(this.installedPack, minecraft));
