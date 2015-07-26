@@ -27,7 +27,15 @@ public class PlatformConstants {
 
 	public static final String MODPACK = API + "modpack/";
 
-	public static final String NEWS = "http://gamerarg.com.ar/MCLauncher/news.php";
+	public static final String MOD_ROOT = "http://www.gamerarg.com.ar/";
+
+	public static final String NEWS = MOD_ROOT + "MCLauncher/news.php";
+
+    public static final String VERSION = MOD_ROOT + "MCLauncher/version.php";
+
+    public static final String DOWNLOAD = MOD_ROOT + "MCLauncher/downloads/launcher";
+
+    public static final String DONATION_URL = "http://gamerarg.com.ar/donar";
 
 	public static String getPlatformInfoUrl(String modpack) {
 		return MODPACK + modpack;
