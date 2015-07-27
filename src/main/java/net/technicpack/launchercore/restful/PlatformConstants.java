@@ -33,7 +33,7 @@ public class PlatformConstants {
 
     public static final String VERSION = MOD_ROOT + "MCLauncher/version.php";
 
-    public static final String DOWNLOAD = MOD_ROOT + "MCLauncher/downloads/launcher";
+    public static final String DOWNLOAD = MOD_ROOT + "MCLauncher/downloads/launcher/";
 
     public static final String DONATION_URL = "http://gamerarg.com.ar/donar";
 
