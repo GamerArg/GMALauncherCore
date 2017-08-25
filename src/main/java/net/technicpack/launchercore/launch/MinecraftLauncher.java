@@ -130,6 +130,11 @@ public class MinecraftLauncher {
 
 		map.put("game_directory", gameDirectory.getAbsolutePath());
 
+        String[] parts = version.getId().split("\\.");
+        if (Integer.valueOf(parts[1]) > 10) {
+            map.put("version_type", "GMA");
+        }
+
 		String targetAssets = Utils.getAssetsDirectory().getAbsolutePath();
 
 		String assetsKey = this.version.getAssetsKey();
