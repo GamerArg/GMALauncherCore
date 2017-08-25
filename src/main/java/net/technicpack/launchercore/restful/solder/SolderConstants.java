@@ -38,7 +38,7 @@ public class SolderConstants {
 
 	public static String getFullSolderUrl(String solder, String profileName) {
 		//TODO: Set up the API urls.
-		return "http://gamerarg.com.ar/MCLauncher/api.php";
+		return "https://gamerarg.com.ar/MCLauncher/api.php";
 		//return solder + "modpack/?include=full&cid=" + Settings.getClientId() + "&u=" + profileName;
 	}
 }
