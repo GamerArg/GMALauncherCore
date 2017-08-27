@@ -52,6 +52,6 @@ public class InstallMinecraftIfNecessaryTask extends ListenerTask {
             Download.fileFromUrl(url, cache.getName(), output, cache, verifier, this);
 		}
 
-		ZipUtils.copyMinecraftJar(cache, new File(this.pack.getBinDir(), "minecraft.jar"));
+        FileUtils.copyFile(cache, new File(this.pack.getBinDir(), "minecraft.jar"), true);
 	}
 }
